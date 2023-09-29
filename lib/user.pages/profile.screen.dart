@@ -62,15 +62,9 @@ class _ProfileBodyState extends State<ProfileBody> {
       ),
       body: SizedBox(
         width: size.width,
-        child: Column(
+        child: const Column(
           children: [
-            const UserBuilder(),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {},
-                child: const Text('test'),
-              ),
-            )
+            UserBuilder(),
           ],
         ),
       ),
@@ -83,8 +77,9 @@ class UserBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UserDoc(
-      builder: (user) => Row(
+    return UserDoc(builder: (user) {
+      debugPrint('$user');
+      return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           UserProfileAvatar(
@@ -103,8 +98,8 @@ class UserBuilder extends StatelessWidget {
             ],
           )
         ],
-      ),
-    );
+      );
+    });
   }
 
   Widget _textBuilder(BuildContext context, String item) {
