@@ -50,37 +50,41 @@ class _LoginBodyState extends State<LoginBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(32),
-            child: LayoutBuilder(builder: (context, constraints) {
-              return Theme(
-                data: Theme.of(context).copyWith(
-                  elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColorDark,
-                      minimumSize: Size(constraints.maxWidth - 40, 40),
-                      // maximumSize: Size(constraints.minWidth, 50),
-                    ),
+      body: UserReady(
+        builder: (user) => user == null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      return Theme(
+                        data: Theme.of(context).copyWith(
+                          elevatedButtonTheme: ElevatedButtonThemeData(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColorDark,
+                              minimumSize: Size(constraints.maxWidth - 40, 40),
+                              // maximumSize: Size(constraints.minWidth, 50),
+                            ),
+                          ),
+                        ),
+                        child: Card(
+                          elevation: 1,
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            child: EmailLoginForm(
+                              passwordPadding: const EdgeInsets.only(bottom: 20),
+                              register: false,
+                              onLogin: () => context.push(ProfileScreen.routeName),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
                   ),
-                ),
-                child: Card(
-                  elevation: 1,
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: EmailLoginForm(
-                      passwordPadding: const EdgeInsets.only(bottom: 20),
-                      register: false,
-                      onLogin: () => context.push(ProfileScreen.routeName),
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ),
-        ],
+                ],
+              )
+            : const ProfileBody(),
       ),
     );
   }

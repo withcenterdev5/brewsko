@@ -1,8 +1,8 @@
+import 'package:brewsko/bottom.navbar.dart';
 import 'package:brewsko/router/router.dart';
 import 'package:fireflutter/fireflutter.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String routeName = '/ProfileScreen';
@@ -32,42 +32,26 @@ class ProfileBody extends StatefulWidget {
 }
 
 class _ProfileBodyState extends State<ProfileBody> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            context.pop();
-          },
-          icon: FaIcon(
-            FontAwesomeIcons.chevronLeft,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
-        title: Text(
-          'Profile',
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
-        forceMaterialTransparency: true,
-        elevation: 0,
-      ),
+      appBar: const CustomAppBar(),
       body: SizedBox(
         width: size.width,
-        child: const Column(
+        child: Column(
           children: [
-            UserBuilder(),
+            const UserBuilder(),
+            const Spacer(),
+            SizedBox(
+              height: size.height / 1.6,
+              child: const UserContent(),
+            ),
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavBar(index: index),
     );
   }
 }
@@ -78,7 +62,6 @@ class UserBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UserDoc(builder: (user) {
-      debugPrint('$user');
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -86,27 +69,71 @@ class UserBuilder extends StatelessWidget {
             radius: 20,
             user: user,
             size: 100,
+            upload: true,
+            // galleryOnly: true,
           ),
           const SizedBox(width: 20),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _textBuilder(context, my.email),
-              _textBuilder(context, my.uid),
-              _textBuilder(context, my.hasPhotoUrl.toString()),
+              _textBuilder(context, my.email, true),
+              _textBuilder(context, my.uid, false),
+              _textBuilder(context, my.hasPhotoUrl.toString(), false),
             ],
-          )
+          ),
         ],
       );
     });
   }
 
-  Widget _textBuilder(BuildContext context, String item) {
+  Widget _textBuilder(BuildContext context, String item, bool isHighlight) {
     return Text(
       item,
       style: TextStyle(
-        color: Theme.of(context).shadowColor,
+        color: isHighlight ? Theme.of(context).shadowColor : Theme.of(context).hintColor,
+        fontSize: isHighlight ? 24 : 16,
+        letterSpacing: -1,
+        fontWeight: isHighlight ? FontWeight.w600 : FontWeight.normal,
+      ),
+      softWrap: true,
+    );
+  }
+}
+
+class UserContent extends StatelessWidget {
+  const UserContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Size size = MediaQuery.of(context).size;
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Card(
+        // elevation: 20,
+        borderOnForeground: true,
+        child: GridView.custom(
+          gridDelegate: SliverQuiltedGridDelegate(
+            crossAxisCount: 4,
+            crossAxisSpacing: 2,
+            mainAxisSpacing: 2,
+            repeatPattern: QuiltedGridRepeatPattern.same,
+            pattern: [
+              const QuiltedGridTile(1, 1),
+              const QuiltedGridTile(1, 1),
+              const QuiltedGridTile(1, 1),
+              const QuiltedGridTile(1, 1),
+            ],
+          ),
+          childrenDelegate: SliverChildBuilderDelegate(
+            (context, index) => Placeholder(
+              strokeWidth: .2,
+              child: Center(
+                child: Text('$index'),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
